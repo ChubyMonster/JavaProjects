@@ -1,4 +1,4 @@
-package src2;
+package utils;
 
 import java.sql.*;
 import java.security.MessageDigest;

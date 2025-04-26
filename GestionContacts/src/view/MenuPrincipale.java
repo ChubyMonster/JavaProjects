@@ -1,4 +1,4 @@
-package src1;
+package view;
 
 import java.awt.EventQueue;
 
@@ -7,8 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import src2.Auth;
-import src2.MySQLConnection;
+import controller.ContactController;
+import model.Contact;
+import utils.Auth;
+import utils.MySQLConnection;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -19,33 +21,26 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.List;
 
 public class MenuPrincipale extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table;
+	private static Connection connection;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MenuPrincipale frame = new MenuPrincipale();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
-	public MenuPrincipale() {
+	private JTable table1;
+    private ContactController controller;
+    
+	public MenuPrincipale(Connection connection) {
+		
+		 controller = new ContactController();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 912, 568);
 		contentPane = new JPanel();
@@ -73,6 +68,7 @@ public class MenuPrincipale extends JFrame {
 		
 		JButton AfficherTout = new JButton("Afficher Tout");
 		AfficherTout.setBounds(10, 86, 127, 55);
+		AfficherTout.addActionListener(e -> loadData(model));
 		contentPane.add(AfficherTout);
 		
 		JButton Imprimer = new JButton("Imprimer");
@@ -89,12 +85,14 @@ public class MenuPrincipale extends JFrame {
 			public void actionPerformed(ActionEvent e) {new Ajouter().setVisible(true);}
 		});
 		
-		JButton Modifier = new JButton("Supprimer");
+		JButton Modifier = new JButton("Modifier");
 		Modifier.setBounds(192, 486, 158, 23);
+		Modifier.addActionListener(e -> ModifyData());
 		contentPane.add(Modifier);
 		
-		JButton Supprimer = new JButton("Modifier");
+		JButton Supprimer = new JButton("Supprimer");
 		Supprimer.setBounds(367, 486, 158, 23);
+		Supprimer.addActionListener(e -> DeleteData());
 		contentPane.add(Supprimer);
 		
 		JButton Rechercher = new JButton("Rechercher");
@@ -103,35 +101,73 @@ public class MenuPrincipale extends JFrame {
 		
 		JButton Quitter = new JButton("Quitter");
 		Quitter.setBounds(717, 486, 158, 23);
+		Quitter.addActionListener(e -> dispose());
 		contentPane.add(Quitter);
-}
+
+		Rechercher.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        new Rechercher().setVisible(true);
+		    }
+		});
+	}
 	private void loadData(DefaultTableModel model) {
-		Connection conn = MySQLConnection.getConnection();
-		
-        String query = "SELECT * FROM contact";
-        
-        try (
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)){
+		DefaultTableModel model1 = (DefaultTableModel) table.getModel();
+        model1.setRowCount(0); // Clear old data
 
-            while (rs.next()) {
-                model.addRow(new Object[] {
-                    rs.getInt("id_Contact"),
-                    rs.getString("Nom"),
-                    rs.getString("Prenom"),
-                    rs.getString("Libelle"),
-                    rs.getString("Sexe"),
-                    rs.getString("TelPerso"),
-                    rs.getString("TelProf"),
-                    rs.getString("Email"),
-                    rs.getInt("Num_Categrorie"),
-                    rs.getInt("Num_Ville")
-                });
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erreur de connexion à la base de données", "Erreur", JOptionPane.ERROR_MESSAGE);
+        List<Contact> contacts = controller.fetchContacts();
+        for (Contact c : contacts) {
+            model1.addRow(new Object[] {
+                c.getId(), c.getNom(), c.getPrenom(), c.getLibelle(), c.getSexe(), c.getTelPerso(),
+                c.getTelPro(), c.getEmail(), c.getNumCategorie(), c.getNumVille()
+            });
         }
     }
+	private void DeleteData() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner un contact !");
+            return;
+        }
+
+        int id = (int) table.getValueAt(row, 0);
+
+        if (controller.removeContact(id)) {
+            JOptionPane.showMessageDialog(this, "Contact supprimé !");
+            loadData(null);
+        } else {
+            JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.");
+        }
+    }
+	private void ModifyData() {
+	    int selectedRow = table.getSelectedRow();
+	    if (selectedRow != -1) {
+	        try {
+	            System.out.println("Row selected: " + selectedRow); // 🛑 DEBUG STEP 1
+
+	            int idContact = (int) table.getValueAt(selectedRow, 0);
+	            String nom = (String) table.getValueAt(selectedRow, 1);
+	            String prenom = (String) table.getValueAt(selectedRow, 2);
+	            String libelle = (String) table.getValueAt(selectedRow, 3);
+	            String sexe = (String) table.getValueAt(selectedRow, 4);
+	            String telPerso = (String) table.getValueAt(selectedRow, 5);
+	            String telPro = (String) table.getValueAt(selectedRow, 6);
+	            String email = (String) table.getValueAt(selectedRow, 7);
+	            int numCategorie = (int) table.getValueAt(selectedRow, 8);
+	            int numVille = (int) table.getValueAt(selectedRow, 9);
+
+	            System.out.println("Opening Modifier Frame with ID: " + idContact); // 🛑 DEBUG STEP 2
+
+	            Modifier modifFrame = new Modifier(idContact, nom, prenom, libelle, sexe, telPerso, telPro, email, numCategorie, numVille);
+	            modifFrame.setVisible(true);
+	            dispose();
+	        } catch (Exception ex) {
+	            ex.printStackTrace(); // 🛑 DEBUG STEP 3
+	            JOptionPane.showMessageDialog(this, "Erreur lors de l'ouverture de Modifier : " + ex.getMessage());
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Veuillez sélectionner un contact à modifier !");
+	    }
+	}
+
 }

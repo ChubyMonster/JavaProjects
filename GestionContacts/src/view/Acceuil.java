@@ -1,4 +1,4 @@
-package src1;
+package view;
 
 import java.awt.BorderLayout;
 
@@ -6,21 +6,26 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import utils.*;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import src2.*;
 public class Acceuil extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField passwordField;
 	private JTextField usernameField;
+	
+	private Connection connection;
 
 	/**
 	 * Launch the application.
@@ -42,6 +47,8 @@ public class Acceuil extends JFrame {
 	 * Create the frame.
 	 */
 	public Acceuil() {
+		
+		connection = MySQLConnection.getConnection();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 658, 327);
 		contentPane = new JPanel();
@@ -81,16 +88,14 @@ public class Acceuil extends JFrame {
 				String Username = usernameField.getText();
 				String Password = passwordField.getText();
 				
-				src2.Auth Auth = new Auth();
+				utils.Auth Auth = new Auth();
 				boolean success = Auth.authenticate(Username, Password);
 				
 				if (success) {
 					JOptionPane.showMessageDialog(lblNewLabel_1, "Login successful!");
 					
-					Connection conn = MySQLConnection.getConnection();
-	                new MenuPrincipale().setVisible(true);
-
-	                // Close the login frame
+					Connection connection = MySQLConnection.getConnection();
+	                new MenuPrincipale(connection).setVisible(true);
 	                dispose();
 	            } else {
 	                JOptionPane.showMessageDialog(lblNewLabel_1, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);

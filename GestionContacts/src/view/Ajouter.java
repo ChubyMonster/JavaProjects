@@ -1,16 +1,17 @@
-package src1;
+package view;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
+
+import utils.MySQLConnection;
+
 import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Ajouter extends JFrame {
 
@@ -21,139 +22,198 @@ public class Ajouter extends JFrame {
 	private JTextField Libel;
 	private JTextField TelPerso;
 	private JTextField MailAdresse;
-	private JTextField Cat;
 	private JTextField TelPro;
+	private JComboBox<String> Ville;
+	private JComboBox<String> Categorie;
+	private JRadioButton F, H;
+	private ButtonGroup genderGroup;
 
-	/**
-	 * Launch the application.
-	 */
+	// Maps for storing (Name -> ID) mapping
+	private Map<String, Integer> villesMap = new HashMap<>();
+	private Map<String, Integer> categoriesMap = new HashMap<>();
+
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Ajouter frame = new Ajouter();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				Ajouter frame = new Ajouter();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public Ajouter() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 574, 431);
+		setBounds(100, 100, 600, 470);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JLabel lblNewLabel = new JLabel("Ajouter Contact");
-		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-		lblNewLabel.setBounds(10, 11, 134, 14);
+		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		lblNewLabel.setBounds(20, 11, 300, 20);
 		contentPane.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Nom");
-		lblNewLabel_1.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_1.setBounds(10, 59, 46, 14);
-		contentPane.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("Prénom");
-		lblNewLabel_2.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_2.setBounds(10, 118, 46, 14);
-		contentPane.add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("Libélle");
-		lblNewLabel_3.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_3.setBounds(10, 178, 46, 14);
-		contentPane.add(lblNewLabel_3);
-		
-		JLabel lblNewLabel_4 = new JLabel("Téléphone");
-		lblNewLabel_4.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_4.setBounds(10, 239, 78, 14);
-		contentPane.add(lblNewLabel_4);
-		
-		JLabel lblNewLabel_5 = new JLabel("Email");
-		lblNewLabel_5.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_5.setBounds(10, 300, 46, 14);
-		contentPane.add(lblNewLabel_5);
-		
-		JLabel lblNewLabel_6 = new JLabel("Catégorie");
-		lblNewLabel_6.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_6.setBounds(10, 361, 78, 14);
-		contentPane.add(lblNewLabel_6);
-		
+
+		String[] labels = {"Nom", "Prénom", "Libellé", "Téléphone Perso", "Téléphone Pro", "Email", "Catégorie", "Sexe", "Ville"};
+		int y = 50;
+		for (int i = 0; i < labels.length; i++) {
+			JLabel label = new JLabel(labels[i]);
+			label.setFont(new Font("SansSerif", Font.PLAIN, 12));
+			label.setBounds(20, y, 150, 20);
+			contentPane.add(label);
+			y += 35;
+		}
+
 		Name = new JTextField();
-		Name.setBounds(98, 59, 86, 20);
+		Name.setBounds(180, 50, 150, 20);
 		contentPane.add(Name);
-		Name.setColumns(10);
-		
+
 		LastName = new JTextField();
-		LastName.setBounds(98, 118, 86, 20);
+		LastName.setBounds(180, 85, 150, 20);
 		contentPane.add(LastName);
-		LastName.setColumns(10);
-		
+
 		Libel = new JTextField();
-		Libel.setBounds(98, 178, 86, 20);
+		Libel.setBounds(180, 120, 150, 20);
 		contentPane.add(Libel);
-		Libel.setColumns(10);
-		
+
 		TelPerso = new JTextField();
-		TelPerso.setBounds(98, 239, 86, 20);
+		TelPerso.setBounds(180, 155, 150, 20);
 		contentPane.add(TelPerso);
-		TelPerso.setColumns(10);
-		
-		MailAdresse = new JTextField();
-		MailAdresse.setBounds(98, 300, 86, 20);
-		contentPane.add(MailAdresse);
-		MailAdresse.setColumns(10);
-		
-		JLabel lblNewLabel_7 = new JLabel("Sexe");
-		lblNewLabel_7.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_7.setBounds(375, 59, 46, 14);
-		contentPane.add(lblNewLabel_7);
-		
-		Cat = new JTextField();
-		Cat.setBounds(98, 361, 86, 20);
-		contentPane.add(Cat);
-		Cat.setColumns(10);
-		
+
 		TelPro = new JTextField();
-		TelPro.setBounds(214, 239, 86, 20);
+		TelPro.setBounds(180, 190, 150, 20);
 		contentPane.add(TelPro);
-		TelPro.setColumns(10);
-		
-		JRadioButton F = new JRadioButton("Femme");
-		F.setBounds(443, 96, 109, 23);
+
+		MailAdresse = new JTextField();
+		MailAdresse.setBounds(180, 225, 150, 20);
+		contentPane.add(MailAdresse);
+
+		Categorie = new JComboBox<>();
+		Categorie.setBounds(180, 260, 150, 22);
+		contentPane.add(Categorie);
+
+		F = new JRadioButton("Femme");
+		F.setBounds(180, 295, 70, 23);
 		contentPane.add(F);
-		
-		JRadioButton H = new JRadioButton("Homme");
-		H.setBounds(332, 96, 109, 23);
+
+		H = new JRadioButton("Homme");
+		H.setBounds(260, 295, 70, 23);
 		contentPane.add(H);
-		
-		JLabel lblNewLabel_8 = new JLabel("Ville");
-		lblNewLabel_8.setFont(new Font("SansSerif", Font.ITALIC, 10));
-		lblNewLabel_8.setBounds(375, 161, 46, 14);
-		contentPane.add(lblNewLabel_8);
-		
-		JComboBox Ville = new JComboBox();
-		Ville.setBounds(375, 197, 109, 22);
+
+		genderGroup = new ButtonGroup();
+		genderGroup.add(F);
+		genderGroup.add(H);
+
+		Ville = new JComboBox<>();
+		Ville.setBounds(180, 330, 150, 22);
 		contentPane.add(Ville);
-		
-		JButton Annuler = new JButton("Annuler");
-		Annuler.setBounds(375, 333, 109, 23);
-		contentPane.add(Annuler);
-		
-		JButton Quitter = new JButton("Quitter");
-		Quitter.setBounds(375, 357, 109, 23);
-		contentPane.add(Quitter);
-		
+
 		JButton Valider = new JButton("Valider");
-		Valider.setBounds(375, 310, 109, 23);
+		Valider.setBounds(400, 70, 130, 30);
 		contentPane.add(Valider);
+
+		JButton Annuler = new JButton("Annuler");
+		Annuler.setBounds(400, 120, 130, 30);
+		contentPane.add(Annuler);
+
+		JButton Quitter = new JButton("Quitter");
+		Quitter.setBounds(400, 170, 130, 30);
+		contentPane.add(Quitter);
+
+		// Populate ComboBoxes
+		loadComboBoxes();
+
+		// Button Listeners
+		Valider.addActionListener(e -> insertContact());
+		Annuler.addActionListener(e -> clearFields());
+		Quitter.addActionListener(e -> {
+			new MenuPrincipale(null).setVisible(true);
+			dispose();
+		});
+	}
+
+	private void loadComboBoxes() {
+		try (Connection conn = MySQLConnection.getConnection()) {
+			Statement stmt1 = conn.createStatement();
+			ResultSet rs1 = stmt1.executeQuery("SELECT Num_Ville, Nom_Ville FROM ville");
+			while (rs1.next()) {
+				villesMap.put(rs1.getString("Nom_Ville"), rs1.getInt("Num_Ville"));
+				Ville.addItem(rs1.getString("Nom_Ville"));
+			}
+			rs1.close();
+
+			Statement stmt2 = conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery("SELECT Num_Categorie, Nom_Categorie FROM categorie");
+			while (rs2.next()) {
+				categoriesMap.put(rs2.getString("Nom_Categorie"), rs2.getInt("Num_Categorie"));
+				Categorie.addItem(rs2.getString("Nom_Categorie"));
+			}
+			rs2.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Erreur de chargement: " + e.getMessage());
+		}
+	}
+
+	private void insertContact() {
+		String nom = Name.getText().trim();
+		String prenom = LastName.getText().trim();
+		String libelle = Libel.getText().trim();
+		String telPerso = TelPerso.getText().trim();
+		String telPro = TelPro.getText().trim();
+		String email = MailAdresse.getText().trim();
+		String selectedVille = (String) Ville.getSelectedItem();
+		String selectedCategorie = (String) Categorie.getSelectedItem();
+		String sexe = F.isSelected() ? "F" : H.isSelected() ? "H" : "";
+
+		String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+		String phoneRegex = "^(\\+212|00212|0)([5-7])\\d{8}$";
+
+		// Validations
+		if (nom.isEmpty() || prenom.isEmpty() || libelle.isEmpty() || email.isEmpty() || telPerso.isEmpty() || telPro.isEmpty() || sexe.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs.");
+			return;
+		}
+		if (!email.matches(emailRegex)) {
+			JOptionPane.showMessageDialog(this, "Adresse email invalide.");
+			return;
+		}
+		if (!telPerso.matches(phoneRegex) || !telPro.matches(phoneRegex)) {
+			JOptionPane.showMessageDialog(this, "Numéro de téléphone invalide.");
+			return;
+		}
+
+		try (Connection conn = MySQLConnection.getConnection()) {
+			String sql = "INSERT INTO contact (Nom, Prenom, Libelle, Sexe, TelPerso, TelProf, Email, Num_Categorie, Num_Ville) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, nom);
+			pstmt.setString(2, prenom);
+			pstmt.setString(3, libelle);
+			pstmt.setString(4, sexe);
+			pstmt.setString(5, telPerso);
+			pstmt.setString(6, telPro);
+			pstmt.setString(7, email);
+			pstmt.setInt(8, categoriesMap.get(selectedCategorie)); // now the correct Num_Categorie
+			pstmt.setInt(9, villesMap.get(selectedVille));         // now the correct Num_Ville
+
+			pstmt.executeUpdate();
+			JOptionPane.showMessageDialog(this, "Contact ajouté avec succès !");
+			clearFields();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Erreur lors de l'insertion : " + e.getMessage());
+		}
+	}
+
+	private void clearFields() {
+		Name.setText("");
+		LastName.setText("");
+		Libel.setText("");
+		TelPerso.setText("");
+		TelPro.setText("");
+		MailAdresse.setText("");
+		Categorie.setSelectedIndex(0);
+		Ville.setSelectedIndex(0);
+		genderGroup.clearSelection();
 	}
 }

@@ -1,34 +1,39 @@
-package src2;
+package utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MySQLConnection {
+    private static Connection connection;
 
-    // Database credentials and URL
-    private static final String URL = "jdbc:mysql://localhost:3306/miniprojectdb";
-    private static final String USER = "root";
-    private static final String PASSWORD = "root2025";
-    
-    private static Connection connection = null;
-    
-    private void DBConnection() {}
-
-    // Public method to get the connection
-    public static Connection getConnection() {
-        if (connection == null) {
+    static  {
             try {
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+    			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contacts","root","");
                 System.out.println("✅ Database connected successfully!");
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("❌ Failed to connect to the database.");
             }
+            
         }
-        return connection;
-    }
+    	
+    	private static void connect() throws SQLException {
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contacts", "root", "");
+    	}
+        public static Connection getConnection() {
+        	try {
+                if (connection == null || connection.isClosed()) {
+                    System.out.println("⚠️ Connection was closed, reopening...");
+                    connect(); // reconnect if closed
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return connection;
+        }
 }
+
 
 
 
