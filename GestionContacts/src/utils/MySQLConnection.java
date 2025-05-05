@@ -9,7 +9,7 @@ public class MySQLConnection {
 
     static  {
             try {
-    			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contacts","root","");
+    			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contactsdb","root","");
                 System.out.println("✅ Database connected successfully!");
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -19,7 +19,7 @@ public class MySQLConnection {
         }
     	
     	private static void connect() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contacts", "root", "");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/contactsdb", "root", "");
     	}
         public static Connection getConnection() {
         	try {

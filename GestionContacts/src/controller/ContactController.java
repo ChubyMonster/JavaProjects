@@ -3,6 +3,7 @@ package controller;
 import model.Contact;
 import model.ContactDAO;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ContactController {
@@ -14,10 +15,16 @@ public class ContactController {
     }
     
     public List<Contact> fetchContacts() {
-        return dao.getAllContacts();
+    	try {
+            return dao.getAllContacts();
+        } catch (Exception e) {
+            System.err.println("Failed to fetch contacts: " + e.getMessage());
+            return Collections.emptyList(); // Fail gracefully
+        }
     }
 
     public boolean removeContact(int id) {
-        return dao.deleteContact(id);
+    	 if (id <= 0) return false; // Validate ID
+    	    return dao.deleteContact(id);
     }
 }

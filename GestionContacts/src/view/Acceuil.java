@@ -1,15 +1,24 @@
 package view;
 
-import java.awt.BorderLayout;
-
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import utils.*;
@@ -17,14 +26,18 @@ import utils.*;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+
 public class Acceuil extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField passwordField;
 	private JTextField usernameField;
-	
+
 	private Connection connection;
 
 	/**
@@ -47,61 +60,115 @@ public class Acceuil extends JFrame {
 	 * Create the frame.
 	 */
 	public Acceuil() {
+
+		setTitle("Accueil");
+        setSize(400, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+		
+		
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Padding
+
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/images/app_logo.png"));
+        Image scaled = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(scaled));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panel.add(logoLabel, gbc);
+        
+        JLabel welcomeLabel = new JLabel("Contact Management App");
+        welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        welcomeLabel.setForeground(new Color(60, 60, 60));
+        gbc.gridy++;
+        panel.add(welcomeLabel, gbc);
+
+     // ===== Username =====
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel userLabel = new JLabel("Num d'Utilisateur:");
+        userLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        panel.add(userLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField usernameField = new JTextField(15);
+        panel.add(usernameField, gbc);
+
+        // ===== Password =====
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel passLabel = new JLabel("Mot de Passe:");
+        passLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        panel.add(passLabel, gbc);
+
+        gbc.gridx = 1;
+        JPasswordField passwordField = new JPasswordField(15);
+        panel.add(passwordField, gbc);
+
+     // ===== Login Button =====
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+
+        JButton loginButton = new JButton("Se Connecter");
+        loginButton.setFocusPainted(false);
+        loginButton.setBackground(new Color(66, 133, 244)); // Blue
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginButton.setBorder(BorderFactory.createLineBorder(new Color(66, 133, 244)));
+        loginButton.setPreferredSize(new Dimension(140, 35));
+
+        // Rounded look
+        loginButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(66, 133, 244)),
+                BorderFactory.createEmptyBorder(5, 20, 5, 20)));
+
+        // Hover effect
+        loginButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent evt) {
+                loginButton.setBackground(new Color(51, 103, 194));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                loginButton.setBackground(new Color(66, 133, 244));
+            }
+        });
+
+        panel.add(loginButton, gbc);
+
+        add(panel);
+        setVisible(true);
 		
 		connection = MySQLConnection.getConnection();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 658, 327);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		loginButton.addActionListener(new ActionListener() {
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JButton Connection = new JButton("Se Connecter");
-		Connection.setBounds(283, 211, 165, 23);
-		contentPane.add(Connection);
-		
-		passwordField = new JTextField();
-		passwordField.setBounds(283, 144, 165, 20);
-		contentPane.add(passwordField);
-		passwordField.setColumns(10);
-		
-		usernameField = new JTextField();
-		usernameField.setBounds(283, 88, 165, 20);
-		contentPane.add(usernameField);
-		usernameField.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("Num d'Utilisateur");
-		lblNewLabel.setBounds(43, 91, 165, 14);
-		contentPane.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Mot de Passe");
-		lblNewLabel_1.setBounds(43, 147, 165, 14);
-		contentPane.add(lblNewLabel_1);
-		
-		Connection.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				
+
+
 				String Username = usernameField.getText();
 				String Password = passwordField.getText();
-				
+
 				utils.Auth Auth = new Auth();
 				boolean success = Auth.authenticate(Username, Password);
-				
+
 				if (success) {
-					JOptionPane.showMessageDialog(lblNewLabel_1, "Login successful!");
-					
+					JOptionPane.showMessageDialog(passLabel, "Login successful!");
+
 					Connection connection = MySQLConnection.getConnection();
 	                new MenuPrincipale(connection).setVisible(true);
 	                dispose();
 	            } else {
-	                JOptionPane.showMessageDialog(lblNewLabel_1, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+	                JOptionPane.showMessageDialog(passLabel, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
 	            }
 			}
 		});
-		
+
 	}
 }

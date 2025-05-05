@@ -15,6 +15,7 @@ public class ContactDAO {
              ResultSet rs = stmt.executeQuery("SELECT * FROM contact")) {
 
             while (rs.next()) {
+            	System.out.println("Fetching contact with ID: " + rs.getInt("id_Contact"));
                 contacts.add(new Contact(
                         rs.getInt("id_Contact"),
                         rs.getString("Nom"),

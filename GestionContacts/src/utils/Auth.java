@@ -36,15 +36,4 @@ public class Auth {
 
         return false;
     }
-//	public static void main(String[] args) {
-//        Auth auth = new Auth();
-//        String inputUsername = "admin";     // simulate user input
-//        String inputPassword = "admin123";
-//
-//        if (auth.authenticate(inputUsername, inputPassword)) {
-//            System.out.println("Login successful!");
-//        } else {
-//            System.out.println("Invalid username or password.");
-//        }
-//    }
 }

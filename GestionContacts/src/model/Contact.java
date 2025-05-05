@@ -102,9 +102,9 @@ public class Contact {
 		this.id = id;
 	}
 
-	public Object getId() {
+	public int getId() {
 		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
 
 }
