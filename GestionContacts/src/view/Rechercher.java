@@ -19,6 +19,10 @@ public class Rechercher extends JFrame {
         setLayout(null);
         setLocationRelativeTo(null);
 
+        
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/app_icon.png"));
+        setIconImage(appIcon.getImage());
+        
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(new Color(245, 245, 245));

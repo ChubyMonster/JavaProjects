@@ -40,9 +40,6 @@ public class Acceuil extends JFrame {
 
 	private Connection connection;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -56,9 +53,6 @@ public class Acceuil extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public Acceuil() {
 
 		setTitle("Accueil");
@@ -70,12 +64,17 @@ public class Acceuil extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Padding
+        gbc.insets = new Insets(10, 10, 10, 10);
 
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/app_icon.png"));
+        setIconImage(appIcon.getImage());
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("/images/app_logo.png"));
+        ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/AuthSucc.png"));
+        ImageIcon icon2 = new ImageIcon(getClass().getResource("/images/AuthFail.png"));
         Image scaled = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         JLabel logoLabel = new JLabel(new ImageIcon(scaled));
-
+        
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -87,7 +86,6 @@ public class Acceuil extends JFrame {
         gbc.gridy++;
         panel.add(welcomeLabel, gbc);
 
-     // ===== Username =====
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.gridx = 0;
@@ -99,7 +97,6 @@ public class Acceuil extends JFrame {
         JTextField usernameField = new JTextField(15);
         panel.add(usernameField, gbc);
 
-        // ===== Password =====
         gbc.gridy++;
         gbc.gridx = 0;
         JLabel passLabel = new JLabel("Mot de Passe:");
@@ -110,26 +107,23 @@ public class Acceuil extends JFrame {
         JPasswordField passwordField = new JPasswordField(15);
         panel.add(passwordField, gbc);
 
-     // ===== Login Button =====
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
 
         JButton loginButton = new JButton("Se Connecter");
         loginButton.setFocusPainted(false);
-        loginButton.setBackground(new Color(66, 133, 244)); // Blue
+        loginButton.setBackground(new Color(66, 133, 244));
         loginButton.setForeground(Color.WHITE);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginButton.setBorder(BorderFactory.createLineBorder(new Color(66, 133, 244)));
         loginButton.setPreferredSize(new Dimension(140, 35));
 
-        // Rounded look
         loginButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(66, 133, 244)),
                 BorderFactory.createEmptyBorder(5, 20, 5, 20)));
 
-        // Hover effect
         loginButton.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
                 loginButton.setBackground(new Color(51, 103, 194));
@@ -159,13 +153,13 @@ public class Acceuil extends JFrame {
 				boolean success = Auth.authenticate(Username, Password);
 
 				if (success) {
-					JOptionPane.showMessageDialog(passLabel, "Login successful!");
+					JOptionPane.showMessageDialog(null, "Login successful!","Authentification",JOptionPane.INFORMATION_MESSAGE, icon1);
 
 					Connection connection = MySQLConnection.getConnection();
 	                new MenuPrincipale(connection).setVisible(true);
 	                dispose();
 	            } else {
-	                JOptionPane.showMessageDialog(passLabel, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+	                JOptionPane.showMessageDialog(null, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE, icon2);
 	            }
 			}
 		});

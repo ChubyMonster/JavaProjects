@@ -12,7 +12,6 @@ public class Contact {
     private int numCategorie;
     private int numVille;
 
-    // Constructor, getters, setters
     public Contact(int id, String nom, String prenom, String libelle, String sexe, String telPerso, String telPro, String email, int numCategorie, int numVille) {
         this.id = id;
         this.nom = nom;
@@ -103,7 +102,6 @@ public class Contact {
 	}
 
 	public int getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
 

@@ -29,6 +29,9 @@ public class Modifier extends JFrame {
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPane.setLayout(null);
         setContentPane(contentPane);
+        
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/app_icon.png"));
+        setIconImage(appIcon.getImage());
 
         JLabel lblNewLabel = new JLabel("Modifier Contact");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 18));

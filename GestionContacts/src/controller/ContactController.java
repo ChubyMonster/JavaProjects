@@ -19,12 +19,12 @@ public class ContactController {
             return dao.getAllContacts();
         } catch (Exception e) {
             System.err.println("Failed to fetch contacts: " + e.getMessage());
-            return Collections.emptyList(); // Fail gracefully
+            return Collections.emptyList(); 
         }
     }
 
     public boolean removeContact(int id) {
-    	 if (id <= 0) return false; // Validate ID
+    	 if (id <= 0) return false; 
     	    return dao.deleteContact(id);
     }
 }

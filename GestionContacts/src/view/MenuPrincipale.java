@@ -8,6 +8,8 @@ import javax.swing.table.DefaultTableModel;
 import controller.ContactController;
 import model.Contact;
 import utils.MySQLConnection;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,10 +40,12 @@ public class MenuPrincipale extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/app_icon.png"));
+        setIconImage(appIcon.getImage());
 
         setLocationRelativeTo(null);
 
-        // Table model and JTable setup
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[] {
             "ID", "Nom", "Prénom", "Libelle", "Sexe", "Tel Perso", "Tel Pro", "Email", "Catégorie", "Ville"
@@ -58,8 +62,7 @@ public class MenuPrincipale extends JFrame {
         lblNewLabel.setForeground(new Color(60, 60, 60));
         lblNewLabel.setBounds(154, 12, 194, 20);
         contentPane.add(lblNewLabel);
-
-        // Styled Buttons
+        
         JButton AfficherTout = createStyledButton("Afficher Tout", 10, 86, 127, 55);
         AfficherTout.addActionListener(e -> loadData(model));
         contentPane.add(AfficherTout);

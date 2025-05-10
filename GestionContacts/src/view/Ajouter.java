@@ -57,6 +57,9 @@ public class Ajouter extends JFrame {
 		lblNewLabel.setForeground(new Color(60, 60, 60));
 		lblNewLabel.setBounds(20, 11, 300, 20);
 		contentPane.add(lblNewLabel);
+		
+		ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/app_icon.png"));
+        setIconImage(appIcon.getImage());
 
 		String[] labels = {"Nom", "Prénom", "Libellé", "Téléphone Perso", "Téléphone Pro", "Email", "Catégorie", "Sexe", "Ville"};
 		int y = 50;
